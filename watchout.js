@@ -6,7 +6,8 @@ var gameValues = {
   currentScore : 0,
   collisions : 0,
   asteroids : [],
-  n : 5
+  numberOfAsteroids : 20,
+  asteroidRadius: 10
 
 }
 
@@ -25,7 +26,7 @@ var setup = function(){
   gameValues.asteroids.length = 0;
 
   //Create a list of new asteroid objects
-  for (var i = 0; i < gameValues.n; i++) {
+  for (var i = 0; i < gameValues.numberOfAsteroids; i++) {
     var newAsteroid = {};
     newAsteroid.top = Math.random() * board.attr('height');
     newAsteroid.left = Math.random() * board.attr('width');
@@ -35,9 +36,10 @@ var setup = function(){
 
   //Add the list of asteroid objects to new SVG elements in the DOM board
   board.selectAll('.asteroids').data(gameValues.asteroids).enter().append('circle')
+    .attr('class', 'asteroids')
     .attr('cx', function(d){ return d.left})
     .attr('cy', function(d){ return d.top})
-    .attr('r', 25)
+    .attr('r', gameValues.asteroidRadius)
     .attr('fill', 'white');
 
   //Reset the scoreboard
@@ -47,4 +49,22 @@ var setup = function(){
 
 };
 
+var update = function(){
+
+  for (var i = 0; i < gameValues.numberOfAsteroids; i++) {
+    gameValues.asteroids[i].top = Math.random() * board.attr('height');
+    gameValues.asteroids[i].left = Math.random() * board.attr('width');
+  }
+
+  //var a = d3.selectAll('.asteroids');
+  //a.attr("r", Math.random() * 100);
+
+  d3.selectAll('.asteroids').data(gameValues.asteroids).transition()
+    .duration(500)
+    .attr('cx', function(d){ return d.left})
+    .attr('cy', function(d){ return d.top});
+};
+
+
 setup();
+setInterval(update, 1000);
