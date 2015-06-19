@@ -7,8 +7,8 @@ var gameValues = {
   collisions : 0,
   asteroids : [],
   numberOfAsteroids : 20,
-  asteroidRadius: 10
-
+  asteroidRadius: 10,
+  playerRadius: 10
 }
 
 //Initialize the board
@@ -18,6 +18,13 @@ var board = d3.select('#board-container')
     .attr('width', gameValues.boardWidth)
     .attr('height', gameValues.boardHeight)
     .style('background-color', 'black');
+
+board.append('circle').attr('id', 'playerOne')
+  .attr('cx', gameValues.boardWidth/2)
+  .attr('cy', gameValues.boardHeight/2)
+  .attr('r', gameValues.playerRadius)
+  .attr('fill', 'red');
+
 
 //Setup the initial board with asteroids and scoreboard
 var setup = function(){
@@ -42,6 +49,15 @@ var setup = function(){
     .attr('r', gameValues.asteroidRadius)
     .attr('fill', 'white');
 
+
+
+  //Add the player to the DOM board
+  board.select('#playerOne')
+    .attr('cx', gameValues.boardWidth/2)
+    .attr('cy', gameValues.boardHeight/2)
+    .attr('r', gameValues.playerRadius);
+
+
   //Reset the scoreboard
   gameValues.highScore = 0;
   gameValues.currentScore = 0;
@@ -60,11 +76,21 @@ var update = function(){
   //a.attr("r", Math.random() * 100);
 
   d3.selectAll('.asteroids').data(gameValues.asteroids).transition()
-    .duration(500)
+    .duration(800)
     .attr('cx', function(d){ return d.left})
     .attr('cy', function(d){ return d.top});
 };
 
+
+
+d3.select('.board').on('mousemove', function(){
+  var currentX = d3.mouse(this)[0];
+  var currentY = d3.mouse(this)[1];
+
+  board.select('#playerOne')
+    .attr('cx', currentX)
+    .attr('cy', currentY);
+});
 
 setup();
 setInterval(update, 1000);
