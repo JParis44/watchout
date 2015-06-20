@@ -47,7 +47,8 @@ var setup = function(){
     .attr('cx', function(d){ return d.left})
     .attr('cy', function(d){ return d.top})
     .attr('r', gameValues.asteroidRadius)
-    .attr('fill', 'white');
+    .attr('fill', 'white')
+    .attr('collided', 'false');
 
 
 
@@ -66,20 +67,28 @@ var setup = function(){
 
 var update = function(){
 
+
+
   for (var i = 0; i < gameValues.numberOfAsteroids; i++) {
     gameValues.asteroids[i].top = Math.random() * board.attr('height');
     gameValues.asteroids[i].left = Math.random() * board.attr('width');
   }
 
   d3.selectAll('.asteroids').data(gameValues.asteroids).transition()
-    .duration(1000)
+    .duration(900)
     .tween('d', function(asteroid){
-      var startPos = d3.select(this)
-      var interpolatorX = d3.interpolateNumber( startPos.attr('cx'), asteroid.left);
-      var interpolatorY = d3.interpolateNumber( startPos.attr('cy'), asteroid.top);
+      var startX = d3.select(this).attr('cx');
+      var startY = d3.select(this).attr('cy');
+      var current = d3.select(this);
+      var interpolatorX = d3.interpolateNumber( startX, asteroid.left);
+      var interpolatorY = d3.interpolateNumber( startY, asteroid.top);
+
+
       return function(t){
-        collisionDetection();
-        d3.select(this).attr('cx', interpolatorX(t)).attr('cy', interpolatorY(t));
+        var x = interpolatorX(t);
+        var y = interpolatorY(t);
+        collisionDetection(x, y, current);
+        d3.select(this).attr('cx', x).attr('cy', y);
       };
     });
 
@@ -96,8 +105,27 @@ var update = function(){
 };
 
 
-var collisionDetection = function(){
-  console.log("It works! MAHAHAHA")
+var collisionDetection = function(x, y, current){
+  var radiiSum = gameValues.playerRadius + gameValues.asteroidRadius;
+  var distance = Math.sqrt(Math.pow((d3.select('#playerOne').attr('cx') - x), 2) + Math.pow((d3.select('#playerOne').attr('cy') - y), 2));
+
+  if((distance - radiiSum) < 0){
+    if(current.attr('collided') === 'false'){
+      gameValues.collisions++;
+      d3.select('#collisionsVal').text(gameValues.collisions);
+      current.attr('collided', 'true');
+      if (gameValues.collisions >= gameValues.maxCollisions){
+        setup();
+      }
+
+   //   d3.select("#failMessage").style("display:")
+    }
+  }
+  else {
+    current.attr('collided', 'false');
+  }
+
+
 };
 
 
@@ -113,15 +141,16 @@ d3.select('.board').on('mousemove', function(){
 });
 
 setup();
+/*
 
-d3.selectAll('.asteroids').on('mouseover', function(){
+d3.selectAll('.asteroids').on('mouseenter', function(){
   console.log("works");
   gameValues.collisions++;
   d3.select('#collisionsVal').text(gameValues.collisions);
   if (gameValues.collisions >= gameValues.maxCollisions) {
     setup();
   }
-});
+});*/
 
-
-setInterval(update, 1300);
+setInterval(update, 1000);
+update();
