@@ -26,7 +26,6 @@ board.append('circle').attr('id', 'playerOne')
   .attr('r', gameValues.playerRadius)
   .attr('fill', 'red');
 
-
 //Setup the initial board with asteroids and scoreboard
 var setup = function(){
 
@@ -74,8 +73,18 @@ var update = function(){
 
   d3.selectAll('.asteroids').data(gameValues.asteroids).transition()
     .duration(1000)
-    .attr('cx', function(d){ return d.left})
-    .attr('cy', function(d){ return d.top});
+    .tween('d', function(asteroid){
+      var startPos = d3.select(this)
+      var interpolatorX = d3.interpolateNumber( startPos.attr('cx'), asteroid.left);
+      var interpolatorY = d3.interpolateNumber( startPos.attr('cy'), asteroid.top);
+      return function(t){
+        collisionDetection();
+        d3.select(this).attr('cx', interpolatorX(t)).attr('cy', interpolatorY(t));
+      };
+    });
+
+/*    .attr('cx', function(d){ return d.left})
+    .attr('cy', function(d){ return d.top});*/
 
   gameValues.currentScore++;
 
@@ -85,6 +94,12 @@ var update = function(){
   d3.select('#currentVal').text(gameValues.currentScore);
 
 };
+
+
+var collisionDetection = function(){
+  console.log("It works! MAHAHAHA")
+};
+
 
 
 
