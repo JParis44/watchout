@@ -1,7 +1,7 @@
 // Set global register of game values
 var gameValues = {
-  boardWidth : 800,
-  boardHeight : 600,
+  boardWidth : 1024,
+  boardHeight : 768,
   highScore : 0,
   currentScore : 0,
   collisions : 0,
@@ -28,6 +28,9 @@ board.append('circle').attr('id', 'playerOne')
 
 //Setup the initial board with asteroids and scoreboard
 var setup = function(){
+
+  // Stop any previous game
+  clearTimeout(update);
 
   //Empty the lisst of asteroid objects
   gameValues.asteroids.length = 0;
@@ -63,6 +66,9 @@ var setup = function(){
   gameValues.currentScore = 0;
   gameValues.collisions = 0;
 
+  // Start game
+  setTimeout(update, 5000);
+
 };
 
 var update = function(){
@@ -90,10 +96,8 @@ var update = function(){
         collisionDetection(x, y, current);
         d3.select(this).attr('cx', x).attr('cy', y);
       };
-    });
 
-/*    .attr('cx', function(d){ return d.left})
-    .attr('cy', function(d){ return d.top});*/
+    });
 
   gameValues.currentScore++;
 
@@ -101,6 +105,9 @@ var update = function(){
 
   d3.select('#highVal').text(gameValues.highScore);
   d3.select('#currentVal').text(gameValues.currentScore);
+
+  // Schedule next update
+  setTimeout(update, 1000);
 
 };
 
@@ -152,5 +159,4 @@ d3.selectAll('.asteroids').on('mouseenter', function(){
   }
 });*/
 
-setInterval(update, 1000);
-update();
+
