@@ -5,6 +5,7 @@ var gameValues = {
   highScore : 0,
   currentScore : 0,
   collisions : 0,
+  maxCollisions : 5,
   asteroids : [],
   numberOfAsteroids : 20,
   asteroidRadius: 10,
@@ -17,7 +18,7 @@ var board = d3.select('#board-container')
     .attr('class', 'board')
     .attr('width', gameValues.boardWidth)
     .attr('height', gameValues.boardHeight)
-    .style('background-color', 'black');
+    .style({'background-color' : 'black', 'cursor' : 'none'});
 
 board.append('circle').attr('id', 'playerOne')
   .attr('cx', gameValues.boardWidth/2)
@@ -59,7 +60,6 @@ var setup = function(){
 
 
   //Reset the scoreboard
-  gameValues.highScore = 0;
   gameValues.currentScore = 0;
   gameValues.collisions = 0;
 
@@ -72,13 +72,18 @@ var update = function(){
     gameValues.asteroids[i].left = Math.random() * board.attr('width');
   }
 
-  //var a = d3.selectAll('.asteroids');
-  //a.attr("r", Math.random() * 100);
-
   d3.selectAll('.asteroids').data(gameValues.asteroids).transition()
-    .duration(800)
+    .duration(1000)
     .attr('cx', function(d){ return d.left})
     .attr('cy', function(d){ return d.top});
+
+  gameValues.currentScore++;
+
+  if(gameValues.currentScore > gameValues.highScore) { gameValues.highScore++; }
+
+  d3.select('#highVal').text(gameValues.highScore);
+  d3.select('#currentVal').text(gameValues.currentScore);
+
 };
 
 
@@ -93,4 +98,15 @@ d3.select('.board').on('mousemove', function(){
 });
 
 setup();
-setInterval(update, 1000);
+
+d3.selectAll('.asteroids').on('mouseover', function(){
+  console.log("works");
+  gameValues.collisions++;
+  d3.select('#collisionsVal').text(gameValues.collisions);
+  if (gameValues.collisions >= gameValues.maxCollisions) {
+    setup();
+  }
+});
+
+
+setInterval(update, 1300);
