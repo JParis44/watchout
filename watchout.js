@@ -21,6 +21,19 @@ var board = d3.select('#board-container')
     .attr('height', gameValues.boardHeight)
     .style({'background-color' : 'black', 'cursor' : 'none'});
 
+d3.select('svg').append('filter')
+    .attr('id', 'image')
+    .attr('x', '0px')
+    .attr('y', '0px')
+    .attr('width', '100%')
+    .attr('height', '100%')
+  .append('feImage')
+    .attr('xlink:href', 'shuriken.gif');
+
+
+/*  board.select('#image').append('feImage')
+    .attr('xlink:href', 'asteroid.png')*/
+
 board.append('circle').attr('id', 'playerOne')
   .attr('cx', gameValues.boardWidth/2)
   .attr('cy', gameValues.boardHeight/2)
@@ -43,14 +56,22 @@ var setup = function(){
     gameValues.asteroids.push(newAsteroid);
   }
 
+  // board.append('path')
+  //   .attr('class', 'star')
+  //   .attr('d', 'M 0.000 5.000 L 6.508 13.515 L 3.909 3.117 L 14.624 3.338 L 4.875 -1.113 L 11.727 -9.352 L 2.169 -4.505 L 0.000 -15.000 L -2.169 -4.505 L -11.727 -9.352 L -4.875 -1.113 L -14.624 3.338 L -3.909 3.117 L -6.508 13.515 L 0.000 5.000')
+  //   .attr('stroke', 'red')
+  //   .attr('stroke-width', '2')
+  //   .attr('fill', 'blue');
+
   //Add the list of asteroid objects to new SVG elements in the DOM board
-  board.selectAll('.asteroids').data(gameValues.asteroids).enter().append('circle')
+ board.selectAll('.asteroids').data(gameValues.asteroids).enter().append('circle')
     .attr('class', 'asteroids')
     .attr('cx', function(d){ return d.left})
     .attr('cy', function(d){ return d.top})
     .attr('r', gameValues.asteroidRadius)
-    .attr('fill', 'white')
-    .attr('collided', 'false');
+    .attr('filter', 'url(#image)')
+    .attr('collided', 'false')
+
 
 
 
