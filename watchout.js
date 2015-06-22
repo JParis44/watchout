@@ -7,11 +7,11 @@ var gameValues = {
   collisions : 0,
   maxCollisions : 5,
   asteroids : [],
-  numberOfAsteroids : 20,
+  numberOfAsteroids : 1,
   asteroidRadius: 15,
   playerRadius: 10,
   running: true // Is game running?
-}
+};
 
 //Initialize the board
 var board = d3.select('#board-container')
@@ -66,11 +66,11 @@ var setup = function(){
   //Add the list of asteroid objects to new SVG elements in the DOM board
  board.selectAll('.asteroids').data(gameValues.asteroids).enter().append('circle')
     .attr('class', 'asteroids')
-    .attr('cx', function(d){ return d.left})
-    .attr('cy', function(d){ return d.top})
+    .attr('cx', function(d){ return d.left;})
+    .attr('cy', function(d){ return d.top;})
     .attr('r', gameValues.asteroidRadius)
     .attr('filter', 'url(#image)')
-    .attr('collided', 'false')
+    .attr('collided', 'false');
 
 
 
@@ -167,7 +167,7 @@ d3.select('.board').on('mousemove', function(){
 });
 
 setup();
-setInterval(update, 1000)
+setInterval(update, 1000);
 /*
 
 d3.selectAll('.asteroids').on('mouseenter', function(){
